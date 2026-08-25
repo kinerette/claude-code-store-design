@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "uxgen",
+  "version": "0.1.0",
+  "description": "Ecommerce conversion mechanics for coding agents, with the commercial and legal rules attached.",
+  "owner": {
+    "name": "Angelo Palfi",
+    "email": "palfiangelo@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "commerce-kit",
+      "description": "Quantity breaks, free-shipping threshold bar, order bump and sticky mobile add-to-cart, with the EU rules encoded in the code rather than recalled in a comment.",
+      "source": ".",
+      "category": "development"
+    }
+  ]
+}

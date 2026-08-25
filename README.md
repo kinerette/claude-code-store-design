@@ -2,7 +2,7 @@
 
 The canonical spec and reference implementation for the four components that raise a basket: **quantity breaks**, the **free-shipping threshold bar**, the **order bump**, and the **sticky add-to-cart**.
 
-MIT. No dependencies beyond React. Copy the file, or install the skill and let your agent do it.
+MIT. No dependencies beyond React. Copy the file, or install the plugin and let your agent do it.
 
 ---
 
@@ -119,10 +119,11 @@ The button leaves the screen the moment the buyer reads the description. On a 39
 
 ---
 
-## Install as a Claude Code skill
+## Install as a Claude Code plugin
 
 ```bash
-npx skills add kinerette/uxgen-commerce-kit
+/plugin marketplace add kinerette/uxgen-commerce-kit
+/plugin install commerce-kit@uxgen
 ```
 
 Then, in the agent:
