@@ -1,0 +1,35 @@
+{
+  "name": "@uxgen/commerce-kit",
+  "version": "0.1.0",
+  "description": "The four components that raise average order value, with the commercial and legal rules attached: quantity breaks (a radio group of named tiers, never a stepper), free-shipping threshold bar, order bump (never pre-ticked), sticky mobile add-to-cart.",
+  "keywords": [
+    "quantity-breaks",
+    "tiered-pricing",
+    "bundle-quantity-selector",
+    "volume-discount",
+    "order-bump",
+    "upsell",
+    "free-shipping-bar",
+    "sticky-add-to-cart",
+    "average-order-value",
+    "aov",
+    "conversion-rate-optimization",
+    "ecommerce",
+    "react",
+    "claude-skill",
+    "mcp"
+  ],
+  "license": "MIT",
+  "author": "Angelo Palfi",
+  "homepage": "https://www.uxgen.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kinerette/uxgen-commerce-kit.git"
+  },
+  "type": "module",
+  "files": ["src", "SKILL.md", "README.md", "LICENSE"],
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "sideEffects": false
+}
