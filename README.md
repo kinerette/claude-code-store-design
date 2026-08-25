@@ -155,4 +155,4 @@ It is not an A/B testing framework, and it does not promise you a lift. Below ro
 
 Built by [uxgen](https://www.uxgen.ai), the MCP that hands these mechanics to a coding agent.
 
-MIT © 2026 Angelo Palfi
+MIT © 2026 uxgen

@@ -20,7 +20,10 @@
     "mcp"
   ],
   "license": "MIT",
-  "author": "Angelo Palfi",
+  "author": {
+    "name": "uxgen",
+    "url": "https://www.uxgen.ai"
+  },
   "homepage": "https://www.uxgen.ai",
   "repository": {
     "type": "git",

@@ -3,15 +3,25 @@
   "version": "0.1.0",
   "description": "The four components that raise average order value, with the commercial and legal rules attached: quantity breaks (a radio group of named tiers, never a stepper), free-shipping threshold bar, order bump (never pre-ticked), sticky mobile add-to-cart.",
   "author": {
-    "name": "Angelo Palfi",
+    "name": "uxgen",
     "url": "https://www.uxgen.ai"
   },
   "homepage": "https://www.uxgen.ai",
   "repository": "https://github.com/kinerette/uxgen-commerce-kit",
   "license": "MIT",
   "keywords": [
-    "ecommerce", "conversion", "average-order-value", "aov", "upsell",
-    "quantity-breaks", "tiered-pricing", "order-bump", "free-shipping",
-    "sticky-add-to-cart", "shopify", "react", "cro"
+    "ecommerce",
+    "conversion",
+    "average-order-value",
+    "aov",
+    "upsell",
+    "quantity-breaks",
+    "tiered-pricing",
+    "order-bump",
+    "free-shipping",
+    "sticky-add-to-cart",
+    "shopify",
+    "react",
+    "cro"
   ]
 }
