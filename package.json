@@ -1,22 +1,28 @@
 {
-  "name": "uxgen-commerce-kit",
-  "version": "0.1.0",
-  "description": "The four components that raise average order value, with the commercial and legal rules attached: quantity breaks (a radio group of named tiers, never a stepper), free-shipping threshold bar, order bump (never pre-ticked), sticky mobile add-to-cart.",
+  "name": "claude-code-store-design",
+  "version": "0.2.0",
+  "description": "Claude Code skill for store, product page and landing page design. Decides which selling mechanics belong on THIS merchant's product, then builds them: quantity breaks as named tiers (never a stepper), free-shipping threshold bar, order bump (never pre-ticked), sticky mobile add-to-cart — with the EU rules encoded in the code.",
   "keywords": [
+    "claude-code",
+    "claude-code-skill",
+    "claude-skills",
+    "agent-skills",
+    "design",
+    "ui",
+    "landing-page",
+    "product-page",
+    "storefront",
+    "ecommerce",
+    "conversion-rate-optimization",
+    "average-order-value",
     "quantity-breaks",
     "tiered-pricing",
-    "bundle-quantity-selector",
-    "volume-discount",
     "order-bump",
     "upsell",
     "free-shipping-bar",
     "sticky-add-to-cart",
-    "average-order-value",
-    "aov",
-    "conversion-rate-optimization",
-    "ecommerce",
+    "shopify",
     "react",
-    "claude-skill",
     "mcp"
   ],
   "license": "MIT",
@@ -27,7 +33,10 @@
   "homepage": "https://www.uxgen.ai",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kinerette/uxgen-commerce-kit.git"
+    "url": "git+https://github.com/kinerette/claude-code-store-design.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kinerette/claude-code-store-design/issues"
   },
   "type": "module",
   "files": [
@@ -37,6 +46,9 @@
     "README.md",
     "LICENSE"
   ],
+  "scripts": {
+    "audit": "node skills/store-design/scripts/audit-commerce.mjs"
+  },
   "peerDependencies": {
     "react": ">=18"
   },

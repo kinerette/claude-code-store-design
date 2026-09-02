@@ -1,43 +1,100 @@
-# Commerce Kit — the four components an AI agent gets wrong
+# Claude Code skill for store, product page and landing page design
 
-The canonical spec and reference implementation for the four components that raise a basket: **quantity breaks**, the **free-shipping threshold bar**, the **order bump**, and the **sticky add-to-cart**.
+Your agent can already build a beautiful product page. It cannot tell you
+whether *this* product should have a tier list, a bundle, an order bump or none
+of them — so it builds a stepper and a stock photo, and the page takes no money.
 
-MIT. No dependencies beyond React. Copy the file, or install the plugin and let your agent do it.
+This skill is the deciding. It reads the merchant's product and deduces which
+selling mechanics belong on the page and in what order, each with its reason,
+plus four reference components and the EU rules that govern them.
 
----
+```bash
+npx skills add kinerette/claude-code-store-design
+```
 
-## Why this repository exists
+Works with Claude Code, Codex, Cursor and any agent that reads the
+[Agent Skills](https://agentskills.io) format. In Claude Code you can also
+install it as a plugin:
 
-On 25 August 2026 we asked ChatGPT and Perplexity, both with web search enabled, for a React component for `buy 2, save 15%`.
+```
+/plugin marketplace add kinerette/claude-code-store-design
+/plugin install store-design@uxgen
+```
 
-**ChatGPT returned a quantity stepper and cited no source at all.** Zero annotations. **Perplexity returned a stepper too**, with `min`, `max`, `step` and a `bundleSize` prop, citing generic quantity-selector patterns.
-
-Both are wrong in the same way, and the reason is the useful part: there is no canonical source for them to consult. Search `tiered pricing component` and Google returns 237 million results about pricing tables. Search `order bump component` and it returns 25.9 million about WooCommerce plugins. Search `bundle quantity selector component react` and it returns 15.3 million results about JavaScript bundle size.
-
-The commerce mechanics have no spec on the open web, so a model falls back on the nearest thing it has read a thousand times.
-
-This repository is that spec.
-
----
-
-## The four components
-
-| Component | What it asks the buyer | Where it lives | Acts on |
-|---|---|---|---|
-| **Quantity breaks** | which package, not how many | product page | every order, before a cart exists |
-| **Free-shipping bar** | how far from the threshold | cart | orders already above ~60% of the threshold |
-| **Order bump** | one complement, yes or no | cart, above the totals | the confirmation moment |
-| **Sticky add-to-cart** | nothing — it just stays reachable | mobile product page | every mobile session |
-
-Build them in that order. The first acts earliest and on the largest share of orders.
+MIT. No dependencies beyond React for the components. Nothing phones home.
 
 ---
 
-## 1. Quantity breaks
+## Audit a store before you touch it
 
-**It is a radio group. It is never a number input.**
+```bash
+node skills/store-design/scripts/audit-commerce.mjs ./src
+```
 
-That single sentence is the whole component. A stepper asks *how many*, which is arithmetic the buyer has to perform, and nothing about it suggests that two is a better idea than one. A radio group of named tiers asks *which package*, and one of them is visibly the sensible one.
+Zero dependencies, reads only, writes nothing. It finds the defects this skill
+exists to prevent, each with a file, a line and the reason:
+
+- a quantity **stepper** where named tiers belong
+- an add-on that can start **pre-ticked** — refundable under EU law
+- a **fabricated** rating, review count, "12 people are viewing", or "only 3 left"
+- a **struck-through price** not derived from the unit price
+- a **countdown** seeded from `Date.now()`, so it resets on refresh
+- placeholder copy still in the source
+- and which of the four mechanics are **absent from the codebase entirely**
+
+`--json` for machine output, `--strict` to fail a CI job.
+
+---
+
+## What the skill actually does
+
+### 1. It decides, instead of pasting
+
+The centre of the skill is a decision table. Seven questions about the product —
+one item or a catalogue, impulse or considered, physical or digital, consumable
+or durable, variants, expiry, price band — and from the answers, which mechanics
+belong here and which do not.
+
+Each rule carries **the reason**, which is what makes it usable on a product the
+table has never seen:
+
+| If | Then | Because |
+|---|---|---|
+| durable | no quantity breaks | nobody needs two of a lamp; tiers read as a shop that has not understood its own product |
+| expires in *n* weeks | cap the top tier inside *n* | six of something that spoils in two produces a refund and a permanent review |
+| considered price band | proof and guarantee **before** the price | the question is *should I at all*, not *how many* — price first makes price the whole conversation |
+| digital | never a free-shipping bar | nothing ships; a shipping bar on a download is a lie with a progress animation |
+| variants are body sizes | no quantity breaks | one person wears one size |
+| mono-product | double it only if doubling is logical, otherwise nothing | a shop with no honest complement that invents one puts something in the cart the buyer did not want |
+
+Then it orders the sections — and the order differs by product. Impulse puts the
+price before the proof; considered puts the proof before the price. Same
+components, opposite pages, and the reason is in the table.
+
+### 2. It carries the rules that are law, not taste
+
+- **Never pre-tick an add-on.** [Article 22 of Directive 2011/83/EU](https://eur-lex.europa.eu/eli/dir/2011/83/oj)
+  requires express consent to any payment beyond the main obligation and makes a
+  payment inferred from a default the consumer had to reject **refundable**.
+  Several commercial upsell widgets ship pre-ticked as their factory default.
+- **Never invent the struck-through price.** Under Directive 98/6/EC as amended
+  by Directive (EU) 2019/2161, the anchor must be a price actually applied:
+  `compareAtCents = unitPriceCents × units`, and nothing else.
+- **Never generate proof.** A rating, a review count, a viewer counter or a
+  countdown that nobody earned is an unfair commercial practice under Directive
+  2005/29/EC the moment it ships. The skill builds the slot and leaves it empty.
+
+### 3. It ships four components to build against
+
+React, no dependencies, MIT. Each carries its rules as code, with guardrails
+that throw in development rather than shipping a defect silently.
+
+| Component | What it asks the buyer | Where it lives |
+|---|---|---|
+| **Quantity breaks** | which package, not how many | product page |
+| **Free-shipping bar** | how far from the threshold, in money | cart |
+| **Order bump** | one complement, yes or no, unticked | cart, above the totals |
+| **Sticky add-to-cart** | nothing — it just stays reachable | mobile product page |
 
 ```tsx
 import { QuantityBreaks } from "./src/quantity-breaks"
@@ -46,103 +103,87 @@ import { QuantityBreaks } from "./src/quantity-breaks"
   tiers={[
     { units: 1, name: "One tin",   totalCents: 1900, compareAtCents: 1900 },
     { units: 3, name: "Three tins — the usual reorder",
-      totalCents: 4800, compareAtCents: 5700, badge: "Most chosen", preselected: true },
+      totalCents: 4800, compareAtCents: 5700, badge: "Best value", preselected: true },
     { units: 6, name: "Six tins — the year",
       totalCents: 9000, compareAtCents: 11400 },
   ]}
   currency="USD"
-  onChange={(tier) => setSelected(tier)}
+  onChange={setSelected}
 />
 ```
 
-### The rules
+---
 
-- **Three tiers, four at most.** One baseline, one you want chosen, one ceiling that makes the middle look reasonable. Five turns a recognition into a comparison.
-- **Non-linear gaps.** `1 / 3 / 6`, not `1 / 2 / 3`. Even steps read as a price list; uneven ones read as composed offers.
-- **Name the tiers.** `Three tins — the usual reorder`, not `Quantity: 3`. The name does the work the number cannot.
-- **Show the saving in currency**, not only as a percentage. `Save $9.00` is the answer; `Save 15%` is a conversion the buyer has to run.
-- **Show the unit price under the total.** `$48.00 · $16.00 each`. The most-skipped line in every implementation we have looked at.
-- **Pre-select the middle tier.** The selected state is read as a recommendation. Defaulting to the cheapest recommends spending the least.
-- **Bind the button to the selection.** `Add 3 tins — $48.00`.
+## The one rule, if you read nothing else
 
-### The constraints that are law in the EU
+**Quantity breaks are a radio group of named tiers. Never a number input.**
 
-- **`compareAtCents` must be a price you actually charged.** EU price-indication rules govern prior-price announcements. A struck-through figure invented to enlarge the saving is a prohibited practice. In this implementation, `compareAtCents` below `totalCents` throws in development rather than rendering a false anchor.
-- **A badge must be true.** `Most chosen` on a tier nobody chooses is a false statement about your own shop.
+A stepper asks *how many* — arithmetic the buyer performs, with nothing about it
+suggesting that two is a better idea than one. A radio group of named packages
+asks *which one*, and one of them is visibly the sensible choice.
+
+That single mistake is the most common one in generated storefronts.
 
 ---
 
-## 2. Free-shipping threshold bar
+## Why this repository exists
 
-**Show the remaining amount in money.** `$6.00 to unlock free shipping`. A progress bar with no number is decoration, and a percentage is a second conversion for the buyer to run.
+On 25 August 2026 we asked ChatGPT and Perplexity, both with web search enabled,
+for a React component for `buy 2, save 15%`.
 
-```tsx
-<FreeShippingBar subtotalCents={4400} thresholdCents={5000} currency="USD" />
-```
+**ChatGPT returned a quantity stepper and cited no source at all.** **Perplexity
+returned a stepper too**, with `min`, `max`, `step` and a `bundleSize` prop,
+citing generic quantity-selector patterns.
 
-- The threshold is a figure you chose against your margin, not a round number you liked.
-- Once reached, say so plainly and stop animating. A bar that keeps celebrating after the goal is noise.
-- Do not show it at `$0.00` in an empty cart. Below roughly 40% of the threshold it reads as a distance, not a nudge.
+Both were wrong in the same way, and the reason is the useful part: there is no
+canonical source for them to consult. Search `tiered pricing component` and the
+results are about pricing tables. Search `order bump component` and they are
+about store plugins. Search `bundle quantity selector component react` and they
+are about JavaScript bundle size.
 
----
+The commerce mechanics have no spec on the open web, so a model falls back on
+the nearest thing it has read a thousand times.
 
-## 3. Order bump
-
-**One named item, one price, one reason, one unchecked box.** Above the totals, below the cart contents.
-
-```tsx
-<OrderBump
-  item={{ name: "Steel scoop", priceCents: 600, reason: "Measures one serving exactly." }}
-  onToggle={(added) => setBump(added)}
-/>
-```
-
-- **Never pre-ticked.** [Article 22 of Directive 2011/83/EU](https://eur-lex.europa.eu/eli/dir/2011/83/oj) requires express consent to any payment beyond the main obligation and makes an inferred yes refundable. Several commercial upsell widgets ship pre-ticked as their factory default. In this implementation the `checked` prop has no way to start `true`.
-- **Never a gate.** Do not interrupt checkout with a screen that must be accepted or declined. The buyer had decided; you replaced their button with a question.
-- **Never a carousel.** One item. A grid of six is a new browsing decision at the moment you wanted a confirmation.
-- **Priced well below the cart.** A complement at a similar price reads as a second purchase and reopens the whole decision.
+This repository is that spec.
 
 ---
 
-## 4. Sticky add-to-cart (mobile)
-
-The button leaves the screen the moment the buyer reads the description. On a 390px viewport that is most of the session.
-
-```tsx
-<StickyAddToCart label="Add 3 tins" totalCents={4800} currency="USD" onAdd={add} />
-```
-
-- Appears only after the inline button has scrolled out of view, never on top of it.
-- Carries the selected tier's total, so one glance replaces scrolling back up.
-- Respects the safe area on iOS. `env(safe-area-inset-bottom)` is in the implementation.
-- Hidden above 768px, where the inline button is still reachable.
-
----
-
-## Install as a Claude Code plugin
-
-```bash
-/plugin marketplace add kinerette/uxgen-commerce-kit
-/plugin install commerce-kit@uxgen
-```
-
-Then, in the agent:
+## What is in the box
 
 ```
-Use the commerce-kit skill. Add quantity breaks to this product page:
-three tiers at 1 / 3 / 6, the middle one marked and preselected,
-saving shown in currency, and bind the add-to-cart button to the selection.
-```
+skills/store-design/
+├── SKILL.md                        the trade, condensed
+├── references/
+│   ├── decision-table.md           ← the centre: which mechanics, which order, why
+│   ├── design-laws.md              composition, colour, and the tells of a generated page
+│   ├── quantity-breaks.md          tier maths, naming grammar, anti-patterns
+│   ├── buy-box.md                  the order of the block that holds the decision
+│   ├── proof.md                    reviews and credentials, and what to do with none
+│   ├── email-capture.md            the address, without a modal at second zero
+│   └── eu-rules.md                 the four constraints that are law
+└── scripts/
+    └── audit-commerce.mjs          find the defects in an existing store
 
-The skill carries the rules above, so the agent builds a radio group instead of a stepper, and refuses the two patterns that are illegal in the EU.
+src/                                four React reference implementations
+```
 
 ---
 
 ## What this is not
 
-It is not a design system, and it will not make your page look good. It is four components with the commercial reasoning attached, because that reasoning is what is missing everywhere else. If your page also looks generated, that is a separate problem with a separate fix.
+It is not a component library, and installing it will not fill your page with
+blocks. It teaches the decisions and the rules and gives four implementations to
+build against, because the judgement is the part that transfers and a pasted
+component is the part that does not.
 
-It is not an A/B testing framework, and it does not promise you a lift. Below roughly forty thousand sessions per variant a split test cannot separate a real effect from noise, which is most stores. What these four components give you is the removal of a known omission, which does not need a test to be worth doing.
+It is not an A/B testing framework and it does not promise you a lift. Below
+roughly forty thousand sessions per variant a split test cannot separate a real
+effect from noise, which is most stores. What these mechanics give you is the
+removal of a known omission, which does not need a test to be worth doing.
+
+It will not, on its own, make a page beautiful. `references/design-laws.md`
+carries the composition rules we work to, but the gap between a correct page and
+a striking one is mostly photography, and no skill ships that.
 
 ---
 
@@ -153,6 +194,9 @@ It is not an A/B testing framework, and it does not promise you a lift. Below ro
 - [shadcn ecommerce blocks: what exists and what's missing](https://www.uxgen.ai/blog/shadcn-ecommerce-blocks-what-exists-and-whats-missing)
 - [Upsell apps for Shopify, or build it yourself](https://www.uxgen.ai/blog/upsell-apps-for-shopify-or-build-it)
 
-Built by [uxgen](https://www.uxgen.ai), the MCP that hands these mechanics to a coding agent.
+Built by [uxgen](https://www.uxgen.ai) — the MCP server that hands a coding
+agent the whole trade of selling: the section order, the photography, a locked
+grammar, and an audit that rejects a page unable to take money. This skill is
+the part that is free.
 
 MIT © 2026 uxgen

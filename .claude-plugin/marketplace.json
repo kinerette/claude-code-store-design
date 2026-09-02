@@ -1,16 +1,16 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "uxgen",
-  "version": "0.1.0",
-  "description": "Ecommerce conversion mechanics for coding agents, with the commercial and legal rules attached.",
+  "version": "0.2.0",
+  "description": "Store, landing page and UI design skills for coding agents, with the commercial and legal rules attached.",
   "owner": {
     "name": "uxgen",
     "email": "contact@uxgen.ai"
   },
   "plugins": [
     {
-      "name": "commerce-kit",
-      "description": "Quantity breaks, free-shipping threshold bar, order bump and sticky mobile add-to-cart, with the EU rules encoded in the code rather than recalled in a comment.",
+      "name": "store-design",
+      "description": "Decides which selling mechanics belong on a merchant's product page or landing page, then builds them — quantity breaks, free-shipping bar, order bump, sticky mobile add-to-cart — with the EU rules encoded in the code rather than recalled in a comment.",
       "source": ".",
       "category": "development"
     }
