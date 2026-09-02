@@ -80,8 +80,31 @@ money: "$6.00 away from free shipping" tells the buyer the threshold and their
 distance from it. A bar filled to 88% with no number tells them nothing and
 substitutes a feeling for a disclosure.
 
-The threshold must also be real. A bar that promises free shipping at $50 and a
-checkout that charges shipping at $52 is the single fastest way to a chargeback.
+### The bar must never compute its own threshold
+
+This is the rule we learned the expensive way, and it is the one most often got
+wrong.
+
+**The fault:** the bar owned its own arithmetic. It announced "free shipping"
+at 100% as soon as anything was in the cart, while the server went on charging
+€10 below the real threshold. On a €40 basket the buyer read *free*, decided to
+buy, and then discovered **+25% at the last screen**. A promise made before the
+decision and broken after it is the fastest chargeback in commerce.
+
+**The rule:** the bar is **display only**. The threshold and the remaining
+amount come from the *same functions the payment side uses to charge shipping* —
+never from a constant retyped in a component. A display that computes its own
+threshold will eventually lie, because the two copies drift and only one of them
+bills.
+
+Three details that came from the same page:
+
+- A **3px rail, solid ink, no green tint.** The unlocked state is read from the
+  fill, not from a colour change. At 6px the gauge weighed as much as the
+  sentence it was illustrating.
+- **14px floor** on the text.
+- **One separating rule, no frame.** A bordered card inside a bordered drawer is
+  a bubble inside a bubble.
 
 ---
 

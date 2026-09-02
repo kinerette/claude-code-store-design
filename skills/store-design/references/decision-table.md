@@ -56,6 +56,11 @@ Seven answers. Everything below reads from them.
 | shipping is always free | **Never a bar.** Say it once, as a fact, in the reassurance strip. | A bar implies a threshold. No threshold, no bar. |
 | single product, one price point | **Only if a tier can cross the threshold.** | If no achievable basket reaches the threshold, the bar is a permanent reminder that the buyer is falling short. |
 
+Whenever you build it: the bar is **display only**. Its threshold and remaining
+amount come from the same functions that charge shipping at checkout, never from
+a constant retyped in a component. The reasoning, and the incident behind it, is
+in `eu-rules.md`.
+
 ### Order bump
 
 | If | Then | Because |
@@ -87,17 +92,22 @@ Whatever the case: **never pre-ticked**, and never a gate. See `eu-rules.md`.
 When the goal is stated as *raise the basket* rather than *raise conversion*, and
 the catalogue has real complements:
 
-Offer the complement with a **real** discount — the house figure is −15% — and
-let it chain: each complement added keeps the rate. A basket that starts at one
-item and ends at three has doubled without a single price being invented.
+At the bottom of the cart, **one** offer — the single most relevant to what is
+already in there — with a visible discount and a one-tap add. The moment it is
+added, **the next offer in the chain takes its place.** Never two at once. A
+basket that starts at one item and ends at three has grown without a single
+price being invented.
 
-Two conditions, and both are load-bearing:
+Three conditions, all load-bearing:
 
-- **The discount must actually apply at checkout.** A displayed −15% that the
-  cart does not honour is the fastest chargeback in commerce, and it is the
-  one defect a buyer always notices.
-- **The complement must complete the first item**, not compete with it. Priced
-  well below the cart. A complement at a similar price reads as a second
+- **One offer at a time.** A grid of six is a new browsing decision at the
+  moment you wanted a confirmation.
+- **The discount is real.** The house rate is −15%, applied by the same function
+  **client side and server side**, and it exists only while the anchor item and
+  the complement are in the cart *together*. A displayed discount the cart does
+  not honour is the defect a buyer always notices.
+- **The complement completes the first item**, it does not compete with it.
+  Priced well below the cart. A complement at a similar price reads as a second
   purchase and reopens the whole decision.
 
 ### Doubling a mono-product

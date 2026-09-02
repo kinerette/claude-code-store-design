@@ -100,9 +100,10 @@ only a percentage. Show the unit price under the total. Bind the add-to-cart
 label to the selection.
 
 **Free-shipping bar.** The remaining amount in money, never a bare percentage or
-an unlabelled bar. The threshold is chosen against margin and must equal the one
-the checkout enforces. Not in an empty cart, not far below the threshold, never
-on a digital product.
+an unlabelled bar. **Display only** — the threshold and the remainder come from
+the same functions that charge shipping at checkout, never from a constant
+retyped in a component, or the two copies drift and only one of them bills. Not
+in an empty cart, not far below the threshold, never on a digital product.
 
 **Order bump.** One named item, one price, one concrete reason, one unchecked
 box, above the totals. Never a carousel. Never a screen that must be cleared to
