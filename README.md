@@ -194,6 +194,13 @@ a striking one is mostly photography, and no skill ships that.
 - [shadcn ecommerce blocks: what exists and what's missing](https://www.uxgen.ai/blog/shadcn-ecommerce-blocks-what-exists-and-whats-missing)
 - [Upsell apps for Shopify, or build it yourself](https://www.uxgen.ai/blog/upsell-apps-for-shopify-or-build-it)
 
+## Siblings
+
+This skill covers the product page. Two others cover the rest of the visit:
+
+- [claude-code-checkout-upsell](https://github.com/kinerette/claude-code-checkout-upsell) — which upsell goes in the cart, the checkout and after payment: order bump, one-click post-purchase, one cross-sell, free-shipping bar.
+- [claude-code-ecommerce-dark-patterns](https://github.com/kinerette/claude-code-ecommerce-dark-patterns) — audits the result for the patterns that are illegal in the EU, UK and US, with the law, a file and a line, and the honest replacement.
+
 Built by [uxgen](https://www.uxgen.ai) — the MCP server that hands a coding
 agent the whole trade of selling: the section order, the photography, a locked
 grammar, and an audit that rejects a page unable to take money. This skill is
